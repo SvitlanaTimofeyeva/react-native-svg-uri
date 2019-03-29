@@ -138,6 +138,7 @@ class SvgUri extends Component{
       console.error("ERROR SVG", e);
     } finally {
       if (this.isComponentMounted) {
+        if (responseXML && responseXML.substring(0,15) === '<!doctype html>') return "";
         this.setState({svgXmlData:responseXML});
       }
     }
