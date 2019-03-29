@@ -1,6 +1,9 @@
 export const camelCase = value => value.replace(/-([a-z])/g, g => g[1].toUpperCase());
 
-export const camelCaseNodeName = ({nodeName, nodeValue}) => ({nodeName: camelCase(nodeName), nodeValue});
+export const camelCaseNodeName = ({nodeName, nodeValue}) => {
+  if (nodeName === 'xlink:href') return ({ nodeName: 'xlinkHref', nodeValue });
+  return ({nodeName: camelCase(nodeName), nodeValue});
+}
 
 export const removePixelsFromNodeValue = ({nodeName, nodeValue}) => ({nodeName, nodeValue: nodeValue.replace('px', '')});
 
@@ -18,4 +21,6 @@ export const transformStyle = ({nodeName, nodeValue, fillProp}) => {
   return null;
 };
 
-export const getEnabledAttributes = enabledAttributes => ({nodeName}) => enabledAttributes.includes(camelCase(nodeName));
+export const getEnabledAttributes = enabledAttributes => ({nodeName}) => {
+  return enabledAttributes.includes(camelCase(nodeName))
+};
