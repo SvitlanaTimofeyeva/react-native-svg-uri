@@ -134,6 +134,7 @@ class SvgUri extends Component{
     try {
       const response = await fetch(uri);
       responseXML = await response.text();
+      if (response.status !== 200) return ""; 
     } catch(e) {
       console.error("ERROR SVG", e);
     } finally {
