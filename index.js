@@ -46,11 +46,11 @@ const ACCEPTED_SVG_ELEMENTS = [
 ];
 
 // Attributes from SVG elements that are mapped directly.
-const SVG_ATTS = ['viewBox', 'width', 'height'];
+const SVG_ATTS = ['viewBox', 'width', 'height', 'preserveAspectRatio'];
 const G_ATTS = ['id'];
 
 const CIRCLE_ATTS = ['cx', 'cy', 'r'];
-const PATH_ATTS = ['d'];
+const PATH_ATTS = ['d', 'transform'];
 const RECT_ATTS = ['width', 'height'];
 const LINE_ATTS = ['x1', 'y1', 'x2', 'y2'];
 const LINEARG_ATTS = LINE_ATTS.concat(['id', 'gradientUnits']);
@@ -64,7 +64,7 @@ const POLYGON_ATTS = ['points'];
 const POLYLINE_ATTS = ['points'];
 
 const COMMON_ATTS = ['fill', 'fillRule', 'fillOpacity', 'stroke', 'strokeWidth', 'strokeOpacity', 'opacity',
-    'strokeLinecap', 'strokeLinejoin', 'mask', 'id',
+    'strokeLinecap', 'strokeLinejoin', 'mask', 'id', 'transform',
     'strokeDasharray', 'strokeDashoffset', 'xlinkHref', 'x', 'y', 'rotate', 'scale', 'origin', 'originX', 'originY'];
 
 let ind = 0;
@@ -134,7 +134,7 @@ class SvgUri extends Component{
     try {
       const response = await fetch(uri);
       responseXML = await response.text();
-      if (response.status !== 200) return ""; 
+      if (response.status !== 200) return "";
     } catch(e) {
       console.error("ERROR SVG", e);
     } finally {
