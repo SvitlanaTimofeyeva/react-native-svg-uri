@@ -134,13 +134,16 @@ class SvgUri extends Component{
     try {
       const response = await fetch(uri);
       responseXML = await response.text();
-      if (response.status !== 200) return "";
+      if (response.status !== 200) {
+        if (this.props.onError) this.props.onError();
+        return "";
+      }
     } catch(e) {
       console.error("ERROR SVG", e);
     } finally {
       if (this.isComponentMounted) {
         if (responseXML && responseXML.substring(0,15) === '<!doctype html>') {
-          if (this.props.onError) this.props.onError(); 
+          if (this.props.onError) this.props.onError();
           return ""
         };
         this.setState({svgXmlData:responseXML});
