@@ -12,6 +12,7 @@ import Svg,{
     RadialGradient,
     Line,
     Path,
+    Image,
     Polygon,
     Polyline,
     Rect,
@@ -43,6 +44,7 @@ const ACCEPTED_SVG_ELEMENTS = [
   'tspan',
   'mask',
   'use',
+  'image',
 ];
 
 // Attributes from SVG elements that are mapped directly.
@@ -64,7 +66,7 @@ const POLYGON_ATTS = ['points'];
 const POLYLINE_ATTS = ['points'];
 
 const COMMON_ATTS = ['fill', 'fillRule', 'fillOpacity', 'stroke', 'strokeWidth', 'strokeOpacity', 'opacity',
-    'strokeLinecap', 'strokeLinejoin', 'mask', 'id', 'transform',
+    'strokeLinecap', 'strokeLinejoin', 'mask', 'id', 'transform', 'preserveAspectRatio', 'clipPath', 'width', 'height',
     'strokeDasharray', 'strokeDashoffset', 'xlinkHref', 'x', 'y', 'rotate', 'scale', 'origin', 'originX', 'originY'];
 
 let ind = 0;
@@ -179,6 +181,11 @@ class SvgUri extends Component{
       componentAtts = this.obtainComponentAtts(node, COMMON_ATTS);
       return <Use key={i} {...componentAtts}>{childs}</Use>;
     }
+    case 'image': {
+      componentAtts = this.obtainComponentAtts(node, COMMON_ATTS);
+      const href = `${componentAtts.xlinkHref}`.replace(/[\n\r]+/g, ' ');
+      return <Image key={i} {...componentAtts} href={href} />
+    }
     case 'svg':
       componentAtts = this.obtainComponentAtts(node, SVG_ATTS);
       if (this.props.width) {
@@ -269,7 +276,6 @@ class SvgUri extends Component{
     if (!ACCEPTED_SVG_ELEMENTS.includes(node.nodeName)) {
       return null;
     }
-
     // Process the xml node
     const arrayElements = [];
 
@@ -288,7 +294,6 @@ class SvgUri extends Component{
           }
         }
     }
-
     return this.createSVGElement(node, arrayElements);
   }
 
@@ -304,14 +309,19 @@ class SvgUri extends Component{
       );
 
       const doc = new xmldom.DOMParser().parseFromString(inputSVG);
+      const svgNode = doc.childNodes && Object.values(doc.childNodes).reduce((acc, node) => {
+        if (node && node.nodeName === 'svg') return node;
+        return acc;
+      }, {});
 
-      const rootSVG = this.inspectNode(doc.childNodes[0]);
+      const rootSVG = this.inspectNode(svgNode);
       return (
           <View style={this.props.style}>
             {rootSVG}
           </View>
       );
     } catch(e){
+      if (this.props.onError) this.props.onError();
       return null;
     }
   }
