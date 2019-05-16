@@ -134,7 +134,12 @@ class SvgUri extends Component{
   async fetchSVGData(uri){
     let responseXML = null;
     try {
-      const response = await fetch(uri);
+      const response = await fetch(uri, {
+        method: 'get',
+        headers: new Headers({
+          'Authorization': 'iqest_dev_api_key_12032019'
+        })
+      });
       responseXML = await response.text();
       if (response.status !== 200) {
         if (this.props.onError) this.props.onError();
